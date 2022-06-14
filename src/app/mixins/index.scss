@@ -1,0 +1,233 @@
+// function and mixin
+
+// px to rem
+@function rem($px) {
+    @if unit($px) == '%' {// 输入 百分比值 不转换
+        @return $px;
+    }
+
+    @if unit($px) == 'rem' {
+        @return $px;
+    }
+
+    @if unitless($px) {
+        $px: $px * 1px;
+    }
+    $base: (750px/10);
+    @return ($px / $base) * 1rem;
+}
+
+// rem to px
+@function px($rem) {
+    $rem: $rem / 1rem;
+    $base: (750px/10);
+    @return $rem * $base;
+}
+
+// 单行内容 文字垂直居中
+@mixin oneLine($h: 30px, $center: false) {
+    $h: rem($h);
+    height: $h;
+    line-height: $h;
+    @if $center {
+        text-align: center;
+    }
+}
+
+// 伪元素实现1px边框
+@mixin border1px($side: bottom) {
+    content: "";
+    position: absolute;
+    #{$side}: 0;
+    @if $side == bottom {
+      left: 0;
+      right: 0;
+    }
+    @if $side == right {
+      top: 0;
+      bottom: 0;
+    }
+    border-#{$side}: 1px solid #dad8d8;
+    transform: scale#{if($side == bottom, Y, X)}#{unquote('(' + 0.5 + ')')};
+}
+
+// 块级元素水平居中
+@mixin blockCenter($px: auto) {
+    @if type-of($px) == 'number' {
+        @if unit($px) == 'px' {
+            $px: rem($px);
+        }
+    }
+
+    margin-left: $px;
+    margin-right: $px;
+}
+
+// 元素宽高
+@mixin size($w: false, $h: false, $minW: false, $minH: false, $maxW: false, $maxH: false) {
+    @if $w    {width: rem($w);}
+    @if $h    {height: rem($h);}
+    @if $minW {min-width: rem($minW);}
+    @if $minH {min-height: rem($minH);}
+    @if $maxW {max-width: rem($maxW);}
+    @if $maxH {max-height: rem($maxH);}
+}
+
+
+// margin
+@mixin margin($t: false, $r: false, $b: false, $l: false) {
+    @if $t {margin-top: rem($t);}
+    @if $r {margin-right: rem($r);}
+    @if $b {margin-bottom: rem($b);}
+    @if $l {margin-left: rem($l);}
+}
+
+// padding
+@mixin padding($t: false, $r: false, $b: false, $l: false) {
+    @if $t {padding-top: rem($t);}
+    @if $r {padding-right: rem($r);}
+    @if $b {padding-bottom: rem($b);}
+    @if $l {padding-left: rem($l);}
+}
+
+@mixin position($p: absolute, $l: false, $t: false, $r: false, $b: false) {
+    position: $p;
+    @if $t {top: rem($t);}
+    @if $r {right: rem($r);}
+    @if $b {bottom: rem($b);}
+    @if $l {left: rem($l);}
+}
+
+// 居中定位
+@mixin center($isH: true, $isV: false) {
+    position: absolute;
+
+    @if $isH {
+        left: 50%;
+        @if isV {
+            transform: translateX(-50%) translateY(-50%);
+        } @else {
+            transform: translateX(-50%);
+        }
+    }
+
+    @if $isV {
+        top: 50%;
+        @if $isH {
+            transform: translateX(-50%) translateY(-50%);
+        } @else {
+            transform: translateY(-50%);
+        }
+
+    }
+}
+// 文本溢出显示省略号..
+@mixin textOverEffect() {
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: break-all;
+    text-overflow: ellipsis;
+}
+
+@mixin webkitLineClamp($n, $height: false) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $n;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    @if $height {
+        height: rem($height);
+    }
+}
+
+@mixin itemgroupSaleoutMask($maskWidth, $ratio: 0.9, $fsize: 28px) {
+    .saleout-mask {
+        box-sizing: content-box;
+        width: $maskWidth;
+        @include oneLine($maskWidth, true);
+        @include center(true, true);
+        z-index: 100;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, .4);
+        color: #f2f2f2;
+        font-size: rem($fsize);
+
+        $maskInnerWidth: $maskWidth * $ratio;
+        &:after{
+          content: '';
+          @include center(true, true);
+          @include size($maskInnerWidth, $maskInnerWidth);
+          border: 1px dashed #fff;
+          border-radius: 50%;
+        };
+      }
+}
+// 设置背景块
+@mixin sprite($width, $height, $url) {
+  width: rem($width);
+  height: rem($height);
+  background: url($url) center no-repeat;
+  background-size: contain;
+}
+// 设置背景块
+@mixin backgroundImage() {
+    background: center no-repeat;
+    background-size: contain;
+}
+
+@mixin ellipsis() {
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: keep-all;
+    text-overflow: ellipsis;
+}
+
+@mixin translate($left: -50%, $top: -50%) {
+    transform: translate($left, $top);
+}
+
+@mixin translateX($left: 0) {
+    transform: translateX($left);
+}
+
+@mixin translateY($top: 0) {
+    transform: translateY($top);
+}
+
+@mixin middle-center($position: absolute) {
+    position: $position;
+    left: 50%;
+    top: 50%;
+    @include translate(-50%, -50%);
+}
+
+@mixin middle-center-x($position: absolute) {
+    position: $position;
+    left: 50%;
+    @include translateX(-50%);
+}
+
+@mixin middle-center-y($position: absolute) {
+    position: $position;
+    top: 50%;
+    @include translateY(-50%);
+}
+
+@mixin multi-ellipsis($line-number: 2) {
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $line-number;
+}
+
+$main-color: #FB4769;
+$black: #111;
+$extra-black: #999999;
+$light-black: #f2f2f2;
+$extra-light-black: #9A9A9A;
+$gray: #666;
+$extra-gray: #333;
+$border: #ccc;

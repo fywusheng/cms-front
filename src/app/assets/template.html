@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+<meta charset="utf-8">
+<title>全球时尚正品百货，超值单品、精选卖场、时尚品牌，时尚新先、正品保证、欧美同价、海外直发 - 走秀网</title>
+</head>
+
+<body>
+<%= htmlWebpackPlugin.options.var.CORE %>
+<script>
+if(window.CORE && window.CORE.page_title){
+    document.title = window.CORE.page_title
+}
+</script>
+<div id="app-topic"></div>
+<%= htmlWebpackPlugin.files.webpackManifest %>
+</body>
+</html>
